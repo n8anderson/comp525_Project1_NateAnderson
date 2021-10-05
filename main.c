@@ -6,7 +6,7 @@
 #define FLOAT_TYPE 3
 #define DECIMAL_TYPE 4
 
-const char* line = "68.895 + 3.105 * 2";
+const char* line = "100.5*2 -200";
 int pointer = 0;
 
 typedef  struct{
@@ -74,7 +74,6 @@ double term() {
     Token firsttoken;
     gettoken(&firsttoken); //Integer
     advance();
-    printf("First token type: %d\n", firsttoken.type);
     if (firsttoken.type == 3){
         printf("Term: Just parsed %f\n", firsttoken.flt);
     } else {
@@ -106,11 +105,7 @@ double term() {
 double expression(){
     double firstvalue = term();
 
-    if (line[pointer] == '\0'){
-        printf("Line: %c\n", line[pointer]);
-        printf("Expression: Reached End\n");
-        return firstvalue;
-    } else {
+    if (line[pointer] == '+'){
         Token plus;
         gettoken(&plus);
         advance();
@@ -118,6 +113,17 @@ double expression(){
 
         double secondvalue = expression();
         return firstvalue + secondvalue;
+    } else if (line[pointer] == '-'){
+        Token minus;
+        gettoken(&minus);
+        advance();
+        printf("Expression: -\n");
+
+        double secondvalue = expression();
+        return firstvalue - secondvalue;
+    } else {
+        printf("Expression: Reached End\n");
+        return firstvalue;
     }
 
 }
