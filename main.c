@@ -36,13 +36,12 @@ void gettoken(Token* token){
         float dig;
         int num = 1;
         if (line[counter] == '.'){
-            printf("This works\n");
+            printf("Just parsed a .\n");
             dec_flag = 1;
             counter++;
             while (line[counter] >= '0' && line[counter] <= '9') {
                 dig = line[counter] - '0';
                 decimal = decimal + (dig / (pow(10, num)));
-                printf("Decimal = %f\n", decimal);
                 counter++;
                 num++;
 
