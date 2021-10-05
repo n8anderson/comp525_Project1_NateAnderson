@@ -70,6 +70,7 @@ void gettoken(Token* token){
     }
 }
 
+//Comment
 double term() {
     Token firsttoken;
     gettoken(&firsttoken); //Integer
