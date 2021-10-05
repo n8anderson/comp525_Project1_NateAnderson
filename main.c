@@ -6,6 +6,7 @@
 #define FLOAT_TYPE 3
 #define DECIMAL_TYPE 4
 
+//Globals
 const char* line = "100.5*2 -200";
 int pointer = 0;
 
