@@ -1,17 +1,18 @@
 #include <stdio.h>
+#include <math.h>
 
 #define INTEGER_TYPE 1
 #define OPERATOR_TYPE 2
 #define FLOAT_TYPE 3
 #define DECIMAL_TYPE 4
 
-const char* line = "5*2+6*2*8+9";
+const char* line = "68.895 + 3.105 * 2";
 int pointer = 0;
 
 typedef  struct{
     int integer;
     char op;
-    float flt;
+    double flt;
     int type;
 } Token;
 
@@ -21,8 +22,43 @@ void advance(){
 
 void gettoken(Token* token){
     if (line[pointer] >= '0' && line[pointer] <= '9'){
-        token->type = INTEGER_TYPE;
-        token->integer = line[pointer] - '0';
+        int dec_flag = 0;
+        int counter = pointer;
+        int digit;
+        int number = 0;
+        while (line[counter] >= '0' && line[counter] <= '9'){
+            digit = line[counter] - '0';
+            number = number * 10;
+            number = number + digit;
+            counter++;
+        }
+        double decimal = 0.0;
+        float dig;
+        int num = 1;
+        if (line[counter] == '.'){
+            printf("This works\n");
+            dec_flag = 1;
+            counter++;
+            while (line[counter] >= '0' && line[counter] <= '9') {
+                dig = line[counter] - '0';
+                decimal = decimal + (dig / (pow(10, num)));
+                printf("Decimal = %f\n", decimal);
+                counter++;
+                num++;
+
+            }
+            decimal = number + decimal;
+            printf("Decimal number: %f\n", decimal);
+        }
+
+        pointer = counter-1;
+        if (dec_flag == 1){
+            token->type = FLOAT_TYPE;
+            token->flt = decimal;
+        } else {
+            token->type = INTEGER_TYPE;
+            token->integer = number;
+        }
     } else if (line[pointer] == '.') {
         token->type = DECIMAL_TYPE;
         token->op = line[pointer];
@@ -35,28 +71,44 @@ void gettoken(Token* token){
     }
 }
 
-int term(){
+double term() {
     Token firsttoken;
     gettoken(&firsttoken); //Integer
     advance();
-
-    printf("Term: Just parsed %d\n", firsttoken.integer);
+    printf("First token type: %d\n", firsttoken.type);
+    if (firsttoken.type == 3){
+        printf("Term: Just parsed %f\n", firsttoken.flt);
+    } else {
+        printf("Term: Just parsed %d\n", firsttoken.integer);
+    }
     Token optoken;
     gettoken(&optoken);
-    if (optoken.type == OPERATOR_TYPE && optoken.op == '*'){
+    if (optoken.type == OPERATOR_TYPE && optoken.op == '*') {
         advance();
         printf("Term parsed a *\n");
-        int secondvalue = term();
+        double secondvalue = term();
 
-        return firsttoken.integer * secondvalue;
-    } else
-        return firsttoken.integer;
+        if (firsttoken.type == 3){
+            return firsttoken.flt * secondvalue;
+        } else {
+            return firsttoken.integer * secondvalue;
+        }
+    } else {
+        if (firsttoken.type == 3){
+            return firsttoken.flt;
+        } else {
+            return firsttoken.integer;
+        }
+
+
+    }
 }
 
-int expression(){
-    int firstvalue = term();
+double expression(){
+    double firstvalue = term();
 
     if (line[pointer] == '\0'){
+        printf("Line: %c\n", line[pointer]);
         printf("Expression: Reached End\n");
         return firstvalue;
     } else {
@@ -65,16 +117,15 @@ int expression(){
         advance();
         printf("Expression: +\n");
 
-        int secondvalue = expression();
+        double secondvalue = expression();
         return firstvalue + secondvalue;
     }
 
 }
 
 void parse(){
-    pointer = 0;
-    int answer = expression();
-    printf("The Answer is: %d\n", answer);
+    double answer = expression();
+    printf("The Answer is: %f\n", answer);
 }
 
 int main() {
