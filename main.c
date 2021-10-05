@@ -15,6 +15,10 @@ typedef  struct{
     int type;
 } Token;
 
+void advance(){
+    pointer++;
+}
+
 void gettoken(Token* token){
     if (line[pointer] >= '0' && line[pointer] <= '9'){
         token->type = INTEGER_TYPE;
@@ -22,14 +26,13 @@ void gettoken(Token* token){
     } else if (line[pointer] == '.') {
         token->type = DECIMAL_TYPE;
         token->op = line[pointer];
+    }  else if (line[pointer] == ' ') {
+        advance();
+        gettoken(token);
     } else {
-        token->type = OPERATOR_TYPE;
-        token->op = line[pointer];
+            token->type = OPERATOR_TYPE;
+            token->op = line[pointer];
     }
-}
-
-void advance(){
-    pointer++;
 }
 
 int term(){
